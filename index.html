@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>mini-games.adventure</title>
+
+<style>
+body{
+margin:0;
+font-family:sans-serif;
+background:#0f172a;
+color:white;
+text-align:center;
+}
+
+h1{margin:20px;}
+
+.menu{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+gap:10px;
+padding:20px;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:10px;
+background:#334155;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#3b82f6;
+transform:scale(1.05);
+}
+
+.game{
+display:none;
+height:100vh;
+}
+
+.back{
+position:fixed;
+top:10px;
+left:10px;
+background:red;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 id="menuTitle">🎮 mini-games.adventure</h1>
+
+<div class="menu" id="buttons"></div>
+
+<button class="back" onclick="back()" style="display:none;">⬅</button>
+
+<div id="games"></div>
+
+<script>
+
+// FIX
+let gamesDiv = document.getElementById("games");
+
+// NAV
+let current=null;
+
+function start(id){
+menuTitle.style.display="none";
+buttons.style.display="none";
+document.querySelector(".back").style.display="block";
+document.getElementById(id).style.display="block";
+current=id;
+init(id);
+}
+
+function back(){
+document.getElementById(current).style.display="none";
+menuTitle.style.display="block";
+buttons.style.display="grid";
+document.querySelector(".back").style.display="none";
+}
+
+// CREATE 30 GAMES
+for(let i=1;i<=30;i++){
+
+let id="game"+i;
+
+// BUTTON
+let btn=document.createElement("button");
+btn.innerText="Game "+i;
+btn.onclick=()=>start(id);
+buttons.appendChild(btn);
+
+// GAME DIV
+let div=document.createElement("div");
+div.id=id;
+div.className="game";
+div.innerHTML=`<h1>Game ${i}</h1><div id="content${i}"></div>`;
+gamesDiv.appendChild(div);
+}
+
+// GAME LOGIC
+function init(id){
+
+let i=parseInt(id.replace("game",""));
+let c=document.getElementById("content"+i);
+
+c.innerHTML="";
+
+// 10 echte Spieltypen rotierend
+switch(i%10){
+
+// CLICK GAME
+case 0:
+let score=0;
+c.innerHTML=`<h2>Score: <span id="s">0</span></h2><button>KLICK!</button>`;
+c.querySelector("button").onclick=()=>{
+score++;
+c.querySelector("#s").innerText=score;
+};
+break;
+
+// REACTION GAME
+case 1:
+c.innerHTML=`<p>Warte...</p><div id="box" style="width:200px;height:200px;background:red;margin:auto;"></div>`;
+let start;
+setTimeout(()=>{
+c.querySelector("#box").style.background="green";
+start=Date.now();
+c.querySelector("#box").onclick=()=>{
+c.innerHTML=`<h2>${Date.now()-start} ms ⚡</h2>`;
+};
+},1000+Math.random()*2000);
+break;
+
+// RANDOM NUMBER
+case 2:
+c.innerHTML=`<button>ROLL</button><h2>?</h2>`;
+c.querySelector("button").onclick=()=>{
+c.querySelector("h2").innerText=Math.floor(Math.random()*100);
+};
+break;
+
+// CATCH BUTTON
+case 3:
+c.innerHTML=`<button id="run">FANG MICH</button>`;
+let b=c.querySelector("#run");
+b.onmouseover=()=>{
+b.style.position="absolute";
+b.style.left=Math.random()*300+"px";
+b.style.top=Math.random()*300+"px";
+};
+break;
+
+// TIMER
+case 4:
+let t=0;
+c.innerHTML=`<h2 id="t">0</h2><button>START</button>`;
+c.querySelector("button").onclick=()=>{
+let interval=setInterval(()=>{
+t++;
+c.querySelector("#t").innerText=t;
+if(t>=10) clearInterval(interval);
+},1000);
+};
+break;
+
+// COLOR GAME
+case 5:
+c.innerHTML=`<button>FARBE</button>`;
+c.querySelector("button").onclick=()=>{
+document.body.style.background=
+"#"+Math.floor(Math.random()*16777215).toString(16);
+};
+break;
+
+// TARGET GAME
+case 6:
+c.innerHTML=`<div id="target" style="width:50px;height:50px;background:red;position:absolute;"></div><p id="sc">0</p>`;
+let sc=0;
+let tbox=c.querySelector("#target");
+
+function move(){
+tbox.style.left=Math.random()*300+"px";
+tbox.style.top=Math.random()*300+"px";
+}
+
+move();
+
+tbox.onclick=()=>{
+sc++;
+c.querySelector("#sc").innerText=sc;
+move();
+};
+break;
+
+// GUESS GAME
+case 7:
+let num=Math.floor(Math.random()*10);
+c.innerHTML=`<input placeholder="0-9"><button>RATE</button><p></p>`;
+c.querySelector("button").onclick=()=>{
+c.querySelector("p").innerText=
+(c.querySelector("input").value==num)?"RICHTIG":"FALSCH";
+};
+break;
+
+// LUCK GAME
+case 8:
+c.innerHTML=`<button>TRY</button><h2></h2>`;
+c.querySelector("button").onclick=()=>{
+c.querySelector("h2").innerText=
+Math.random()<0.5?"🍀 WIN":"💀 LOSE";
+};
+break;
+
+// SPAM GAME
+case 9:
+c.innerHTML=`<button>SPAM</button><div></div>`;
+c.querySelector("button").onclick=()=>{
+c.querySelector("div").innerHTML+="😂";
+};
+break;
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
