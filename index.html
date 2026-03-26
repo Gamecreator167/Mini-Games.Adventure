@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>mini-games.adventure</title>
+
+<style>
+body{margin:0;font-family:sans-serif;background:#0f172a;color:white;text-align:center;}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;padding:20px;}
+button{padding:10px;border:none;border-radius:10px;background:#334155;color:white;cursor:pointer;}
+button:hover{background:#3b82f6;}
+.game{display:none;height:100vh;}
+.back{position:fixed;top:10px;left:10px;}
+.box{width:50px;height:50px;background:red;position:absolute;}
+</style>
+
+</head>
+
+<body>
+
+<h1 id="menu">🎮 mini-games.adventure</h1>
+<div class="menu" id="buttons"></div>
+<button class="back" onclick="back()" style="display:none;">⬅</button>
+
+<div id="games"></div>
+
+<script>
+
+// NAV
+let current=null;
+function start(id){
+menu.style.display="none";
+buttons.style.display="none";
+document.querySelector(".back").style.display="block";
+document.getElementById(id).style.display="block";
+current=id;
+init(id);
+}
+function back(){
+document.getElementById(current).style.display="none";
+menu.style.display="block";
+buttons.style.display="grid";
+document.querySelector(".back").style.display="none";
+}
+
+// CREATE 30 GAMES
+for(let i=1;i<=30;i++){
+let id="g"+i;
+
+// button
+let b=document.createElement("button");
+b.innerText="Game "+i;
+b.onclick=()=>start(id);
+buttons.appendChild(b);
+
+// game div
+let d=document.createElement("div");
+d.id=id;
+d.className="game";
+d.innerHTML=`<h1>Game ${i}</h1><div id="c${i}"></div>`;
+games.appendChild(d);
+}
+
+// GAME LOGIC
+function init(id){
+let i=parseInt(id.replace("g",""));
+let c=document.getElementById("c"+i);
+c.innerHTML="";
+
+switch(i){
+
+case 1:
+let s=0;
+c.innerHTML=`<p id=s>0</p><button>KLICK</button>`;
+c.querySelector("button").onclick=()=>c.querySelector("#s").innerText=++s;
+break;
+
+case 2:
+c.innerHTML=`<button>START</button><p></p>`;
+c.querySelector("button").onclick=()=>{
+let t=Date.now();
+setTimeout(()=>c.querySelector("p").innerText=(Date.now()-t)+" ms",1000);
+};
+break;
+
+case 3:
+c.innerHTML=`<button>Würfeln</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=Math.floor(Math.random()*6)+1;
+break;
+
+case 4:
+c.innerHTML=`<button>Münze</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=Math.random()<0.5?"Kopf":"Zahl";
+break;
+
+case 5:
+c.innerHTML=`<button>Emoji</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=["😂","😎","🔥"][Math.floor(Math.random()*3)];
+break;
+
+case 6:
+c.innerHTML=`<button>Farbe</button>`;
+c.querySelector("button").onclick=()=>document.body.style.background="#"+Math.floor(Math.random()*16777215).toString(16);
+break;
+
+case 7:
+c.innerHTML=`<div class="box" id="t"></div><p id="sc">0</p>`;
+let sc=0;
+let t=document.getElementById("t");
+t.onclick=()=>{sc++;document.getElementById("sc").innerText=sc;move();}
+function move(){t.style.left=Math.random()*300+"px";t.style.top=Math.random()*300+"px";}
+move();
+break;
+
+case 8:
+c.innerHTML=`<button>RNG</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=Math.random();
+break;
+
+case 9:
+c.innerHTML=`<button>Spam</button><div></div>`;
+c.querySelector("button").onclick=()=>c.querySelector("div").innerHTML+="😂";
+break;
+
+case 10:
+let r=0;
+c.innerHTML=`<p id=r>0</p><button>+</button>`;
+c.querySelector("button").onclick=()=>c.querySelector("#r").innerText=++r;
+break;
+
+case 11:
+c.innerHTML=`<input><p></p>`;
+c.querySelector("input").oninput=e=>c.querySelector("p").innerText=e.target.value.length;
+break;
+
+case 12:
+let a=Math.floor(Math.random()*10),b=Math.floor(Math.random()*10);
+c.innerHTML=`<p>${a}+${b}</p><input><button>OK</button>`;
+c.querySelector("button").onclick=()=>alert(c.querySelector("input").value==a+b?"Richtig":"Falsch");
+break;
+
+case 13:
+let num=Math.floor(Math.random()*10);
+c.innerHTML=`<input><button>Guess</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=(c.querySelector("input").value==num)?"YES":"NO";
+break;
+
+case 14:
+c.innerHTML=`<button id="run">Catch</button>`;
+let rb=c.querySelector("#run");
+rb.onmouseover=()=>{rb.style.position="absolute";rb.style.left=Math.random()*300+"px";rb.style.top=Math.random()*300+"px";}
+break;
+
+case 15:
+let t2=0;
+c.innerHTML=`<p id=t>0</p><button>Start</button>`;
+c.querySelector("button").onclick=()=>setInterval(()=>c.querySelector("#t").innerText=++t2,1000);
+break;
+
+case 16:
+c.innerHTML=`<button>Win?</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=Math.random()<0.5?"WIN":"LOSE";
+break;
+
+case 17:
+c.innerHTML=`<button>Mine</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=Math.random()<0.2?"💥":"Safe";
+break;
+
+case 18:
+let cnt=0;
+c.innerHTML=`<p id=c>0</p><button>+</button>`;
+c.querySelector("button").onclick=()=>c.querySelector("#c").innerText=++cnt;
+break;
+
+case 19:
+c.innerHTML=`<button>Random Color</button>`;
+c.querySelector("button").onclick=()=>document.body.style.background="#"+Math.random().toString(16).slice(2,8);
+break;
+
+case 20:
+c.innerHTML=`<button>Fast Click</button><p>0</p>`;
+let fc=0;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=++fc;
+break;
+
+case 21:
+c.innerHTML=`<button>Timer</button><p></p>`;
+c.querySelector("button").onclick=()=>{
+let t=Date.now();
+setTimeout(()=>c.querySelector("p").innerText=(Date.now()-t),1000);
+};
+break;
+
+case 22:
+c.innerHTML=`<button>Move</button>`;
+c.querySelector("button").onclick=e=>{
+e.target.style.position="absolute";
+e.target.style.left=Math.random()*300+"px";
+};
+break;
+
+case 23:
+c.innerHTML=`<button>+</button><button>-</button><p>0</p>`;
+let val=0;
+c.querySelectorAll("button")[0].onclick=()=>c.querySelector("p").innerText=++val;
+c.querySelectorAll("button")[1].onclick=()=>c.querySelector("p").innerText=--val;
+break;
+
+case 24:
+c.innerHTML=`<button>Emoji Rain</button><div></div>`;
+c.querySelector("button").onclick=()=>setInterval(()=>c.querySelector("div").innerHTML+="😂<br>",200);
+break;
+
+case 25:
+c.innerHTML=`<button>Click</button>`;
+c.querySelector("button").onclick=e=>e.target.style.transform="scale("+(Math.random()+1)+")";
+break;
+
+case 26:
+c.innerHTML=`<button>Color Box</button><div style="width:50px;height:50px;background:red;margin:auto;"></div>`;
+c.querySelector("button").onclick=()=>c.querySelector("div").style.background="#"+Math.random().toString(16).slice(2,8);
+break;
+
+case 27:
+c.innerHTML=`<button>Grow</button><div style="width:50px;height:50px;background:blue;margin:auto;"></div>`;
+let size=50;
+c.querySelector("button").onclick=()=>{size+=10;c.querySelector("div").style.width=size+"px";};
+break;
+
+case 28:
+c.innerHTML=`<button>Random Text</button><p></p>`;
+c.querySelector("button").onclick=()=>c.querySelector("p").innerText=Math.random().toString(36);
+break;
+
+case 29:
+c.innerHTML=`<button>Hide</button>`;
+c.querySelector("button").onclick=e=>e.target.style.display="none";
+break;
+
+case 30:
+c.innerHTML=`<button>Teleport</button>`;
+c.querySelector("button").onclick=e=>{
+e.target.style.position="absolute";
+e.target.style.left=Math.random()*300+"px";
+e.target.style.top=Math.random()*300+"px";
+};
+break;
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
